@@ -192,7 +192,9 @@ class CardTile extends StatelessWidget {
                                             Get.snackbar("Saved",
                                                 "You can find this story in Bookmarks.",
                                                 isDismissible: true,
-                                                dismissDirection: SnackDismissDirection.HORIZONTAL,
+                                                dismissDirection:
+                                                    SnackDismissDirection
+                                                        .HORIZONTAL,
                                                 titleText: Text("Saved",
                                                     style: TextStyle(
                                                       fontFamily: "RobotoMono",
@@ -460,7 +462,7 @@ class ListNews extends StatelessWidget {
             alignment: Alignment.topCenter,
             // color: Colors.red,
             width: 256,
-            height: 80,
+            height: 90,
             padding: EdgeInsets.only(right: 20),
             child: Text(newsController.newsList().articles![index].title!,
                 style: TextStyle(

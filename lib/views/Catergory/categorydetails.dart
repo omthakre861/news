@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:news/Search/searchdeglate.dart';
+import 'package:news/Search/searchdetails.dart';
 import 'package:news/controllers/categorycontroller.dart';
 import 'package:news/Webview/webview.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -40,13 +42,20 @@ class Categorydetails extends StatelessWidget {
           IconButton(
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
-              onPressed: () {},
+              onPressed: () async {
+                var search =
+                    await showSearch(context: context, delegate: Searchpage());
+                if (search != null && search != "") {
+                  // print(search);
+                  Get.to(() => SearchDetails(), arguments: search);
+                }
+              },
               icon: Icon(
                 CupertinoIcons.search,
                 // color: Colors.black,
               ))
         ],
-          ),
+      ),
       // backgroundColor: Colors.white,
       body: Obx(() {
         if (categoryController.isLoading.value) {

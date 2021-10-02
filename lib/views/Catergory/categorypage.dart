@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:news/Search/searchdeglate.dart';
+import 'package:news/Search/searchdetails.dart';
 
 import 'categorydetails.dart';
 import 'categorylist.dart';
@@ -23,7 +25,14 @@ class CategoryPage extends StatelessWidget {
             centerTitle: true,
             actions: [
               IconButton(
-                onPressed: () {},
+                 onPressed: () async {
+                var search =
+                    await showSearch(context: context, delegate: Searchpage());
+                if (search != null && search != "") {
+                  print(search);
+                  Get.to(() => SearchDetails(), arguments: search);
+                }
+              },
                 icon: Icon(CupertinoIcons.search),
                 iconSize: 30,
                 // color: Colors.black87,
