@@ -50,9 +50,9 @@ class CategoryService{
 class SearchService{
   static var client = http.Client();
 
-  static Future<SearchNews?> fetchSearch(String query) async {
+  static Future<SearchNews?> fetchSearch(String query,String sortby) async {
     var url =
-        "https://newsapi.org/v2/everything?q=$query&apiKey=1bbfd081107743c484a41019171fcf21";
+        "https://newsapi.org/v2/everything?q=$query&sortBy=$sortby&apiKey=1bbfd081107743c484a41019171fcf21";
     var response = await client.get(Uri.parse(url));
 
     try {

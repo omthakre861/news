@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:news/Search/searchdeglate.dart';
 import 'package:news/Search/searchdetails.dart';
@@ -12,6 +14,7 @@ import 'package:news/controllers/categorycontroller.dart';
 import 'package:news/controllers/newscontroller.dart';
 import 'package:news/models/bookmark.dart';
 import 'package:news/views/Catergory/categorydetails.dart';
+import 'package:share/share.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class HomePage extends StatelessWidget {
@@ -106,14 +109,12 @@ class CardTile extends StatelessWidget {
             // mainAxisSize: MainAxisSize.min,
             children: [
               InkWell(
-                onTap: (){
-                String newsurl = newsController
-                            .newsList()
-                            .articles![index]
-                            .url!;
-                        Get.to(() => WebviewPage(),
-                            arguments: newsurl, fullscreenDialog: true);
-                       },
+                onTap: () {
+                  String newsurl =
+                      newsController.newsList().articles![index].url!;
+                  Get.to(() => WebviewPage(),
+                      arguments: newsurl, fullscreenDialog: true);
+                },
                 child: Card(
                   // margin: EdgeInsets.all(0),
                   elevation: 0,
@@ -129,7 +130,8 @@ class CardTile extends StatelessWidget {
                             index: index,
                           )
                         ] else ...[
-                          ListNews(newsController: newsController, index: index),
+                          ListNews(
+                              newsController: newsController, index: index),
                         ],
                         Container(
                           child: Row(
@@ -189,10 +191,13 @@ class CardTile extends StatelessWidget {
                                                 .bookmarkstore[0]);
                                             Get.snackbar("Saved",
                                                 "You can find this story in Bookmarks.",
+                                                isDismissible: true,
+                                                dismissDirection: SnackDismissDirection.HORIZONTAL,
                                                 titleText: Text("Saved",
                                                     style: TextStyle(
                                                       fontFamily: "RobotoMono",
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       fontSize: 20,
                                                     )),
                                                 messageText: Text(
@@ -203,7 +208,8 @@ class CardTile extends StatelessWidget {
                                                 icon: Container(
                                                   margin: EdgeInsets.all(10),
                                                   child: Icon(
-                                                    CupertinoIcons.bookmark_fill,
+                                                    CupertinoIcons
+                                                        .bookmark_fill,
                                                     size: 40,
                                                     color: Color(0xFFC74B16),
                                                   ),
@@ -217,8 +223,8 @@ class CardTile extends StatelessWidget {
                                                         .newsList()
                                                         .articles![index]
                                                         .title);
-                                            print(
-                                                bookmarkController.bookmarkstore);
+                                            print(bookmarkController
+                                                .bookmarkstore);
                                           }
                                         },
                                         icon: !newsController
@@ -234,7 +240,16 @@ class CardTile extends StatelessWidget {
                                               )),
                                     IconButton(
                                         onPressed: () {
-                                          Get.bottomSheet(BottomSheet());
+                                          Get.bottomSheet(BottomSheet(
+                                            url: newsController
+                                                .newsList()
+                                                .articles![index]
+                                                .url!,
+                                            subject: newsController
+                                                .newsList()
+                                                .articles![index]
+                                                .title!,
+                                          ));
                                         },
                                         splashColor: Colors.transparent,
                                         highlightColor: Colors.transparent,
@@ -278,8 +293,13 @@ class CardTile extends StatelessWidget {
 
 class BottomSheet extends StatelessWidget {
   const BottomSheet({
+    required this.url,
+    required this.subject,
     Key? key,
   }) : super(key: key);
+
+  final String url;
+  final String subject;
 
   @override
   Widget build(BuildContext context) {
@@ -299,7 +319,16 @@ class BottomSheet extends StatelessWidget {
                 size: 25,
                 color: Colors.black,
               ),
-              title: Text('Share too ...'),
+              title: Text(
+                'Share too ...',
+                style: TextStyle(color: Colors.black),
+              ),
+              onTap: () {
+                Share.share(
+                  url,
+                  subject: subject,
+                );
+              },
             ),
             ListTile(
               leading: Icon(
@@ -307,7 +336,21 @@ class BottomSheet extends StatelessWidget {
                 size: 25,
                 color: Colors.black,
               ),
-              title: Text('Copy link'),
+              title: Text(
+                'Copy link',
+                style: TextStyle(color: Colors.black),
+              ),
+              onTap: () async {
+                await Clipboard.setData(ClipboardData(text: url));
+                Get.back();
+                Fluttertoast.showToast(
+                    msg: "Link is Copied !!!",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1,
+                    textColor: Colors.white,
+                    fontSize: 16.0);
+              },
             ),
             ListTile(
               leading: Icon(
@@ -315,7 +358,10 @@ class BottomSheet extends StatelessWidget {
                 size: 25,
                 color: Colors.black,
               ),
-              title: Text('Not interesting'),
+              title: Text(
+                'Not interesting',
+                style: TextStyle(color: Colors.black),
+              ),
             ),
             ListTile(
               leading: Icon(
@@ -323,7 +369,10 @@ class BottomSheet extends StatelessWidget {
                 size: 25,
                 color: Colors.black,
               ),
-              title: Text('Report'),
+              title: Text(
+                'Report',
+                style: TextStyle(color: Colors.black),
+              ),
             ),
           ],
         ));

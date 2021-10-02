@@ -46,7 +46,7 @@ class Categorydetails extends StatelessWidget {
                 // color: Colors.black,
               ))
         ],
-      ),
+          ),
       // backgroundColor: Colors.white,
       body: Obx(() {
         if (categoryController.isLoading.value) {

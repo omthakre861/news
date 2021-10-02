@@ -58,6 +58,7 @@ class MenuPage extends StatelessWidget {
                         trailing: CupertinoSwitch(
                             value: menuController.switchbutton.value,
                             onChanged: (value) {
+                             
                               menuController.switchbutton.value = value;
                               menuController.theme(value);
                             }),
