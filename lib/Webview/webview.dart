@@ -3,14 +3,21 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class CategoryWebView extends StatefulWidget {
-  CategoryWebView({Key? key}) : super(key: key);
+class WebviewPage extends StatefulWidget {
+  WebviewPage({Key? key}) : super(key: key);
 
   @override
-  _CategoryWebViewState createState() => _CategoryWebViewState();
+  _WebviewPageState createState() => _WebviewPageState();
 }
 
-class _CategoryWebViewState extends State<CategoryWebView> {
+class _WebviewPageState extends State<WebviewPage> {
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _WebviewPageState();
+    super.dispose();
+  }
+
   final url = Get.arguments;
 
   @override

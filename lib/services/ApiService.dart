@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'package:news/models/categornews.dart';
 import 'package:news/models/newsheadline.dart';
+import 'package:news/models/search.dart';
 
 class ApiService {
   static var client = http.Client();
@@ -37,6 +38,28 @@ class CategoryService{
         var jsonString = response.body;
         CategoryNews? categoryinfo = categoryNewsFromJson(jsonString);
         return categoryinfo;
+      }
+    } catch (e) {
+      print(e);
+      // TODO
+    }
+  return null;
+  }
+}
+
+class SearchService{
+  static var client = http.Client();
+
+  static Future<SearchNews?> fetchSearch(String query) async {
+    var url =
+        "https://newsapi.org/v2/everything?q=$query&apiKey=1bbfd081107743c484a41019171fcf21";
+    var response = await client.get(Uri.parse(url));
+
+    try {
+      if (response.statusCode == 200) {
+        var jsonString = response.body;
+        SearchNews? searchinfo = searchNewsFromJson(jsonString);
+        return searchinfo;
       }
     } catch (e) {
       print(e);

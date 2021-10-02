@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:get/get.dart';
+import 'package:news/Webview/webview.dart';
 import 'package:news/controllers/bookmarkcontroller.dart';
 import 'package:news/controllers/newscontroller.dart';
 
@@ -33,114 +34,126 @@ class Savedbookmark extends StatelessWidget {
                   child: Column(
                     // mainAxisSize: MainAxisSize.min,
                     children: [
-                      Card(
-                          // margin: EdgeInsets.all(0),
-                          elevation: 0,
-                          child: Container(
-                            padding: EdgeInsets.all(5),
-                            child: Column(
-                              children: [
-                                ListNews(
-                                  bookmarkController: bookmarkController,
-                                  index: index,
-                                ),
-                                Container(
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(
-                                        width: 250,
-                                        child: Row(
-                                          children: [
-                                            Timeago(
-                                                bookmarkController:
-                                                    bookmarkController,
-                                                index: index),
-                                            SizedBox(
-                                              width: 5,
-                                            ),
-                                            Text('·'),
-                                            SizedBox(
-                                              width: 5,
-                                            ),
-                                            Expanded(
-                                              child: Text(
-                                                bookmarkController
-                                                            .bookmarkstore[
-                                                                index]
-                                                            .author !=
-                                                        null
-                                                    ? bookmarkController
-                                                        .bookmarkstore[index]
-                                                        .author!
-                                                    : "",
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
+                      InkWell(
+                        onTap: () {
+                          String newsurl =
+                              bookmarkController.bookmarkstore[index].url!;
+                          Get.to(() => WebviewPage(),
+                              arguments: newsurl, fullscreenDialog: true);
+                        },
+                        child: Card(
+                            // margin: EdgeInsets.all(0),
+                            elevation: 0,
+                            child: Container(
+                              padding: EdgeInsets.all(5),
+                              child: Column(
+                                children: [
+                                  ListNews(
+                                    bookmarkController: bookmarkController,
+                                    index: index,
+                                  ),
+                                  Container(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          width: 250,
+                                          child: Row(
+                                            children: [
+                                              Timeago(
+                                                  bookmarkController:
+                                                      bookmarkController,
+                                                  index: index),
+                                              SizedBox(
+                                                width: 5,
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            IconButton(
-                                                splashColor: Colors.transparent,
-                                                highlightColor:
-                                                    Colors.transparent,
-                                                onPressed: () {
-                                                  if (bookmarkController
+                                              Text('·'),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              Expanded(
+                                                child: Text(
+                                                  bookmarkController
+                                                              .bookmarkstore[
+                                                                  index]
+                                                              .author !=
+                                                          null
+                                                      ? bookmarkController
                                                           .bookmarkstore[index]
-                                                          .like ==
-                                                      true) {
-                                                    changeboolognews(index);
-
-                                                    bookmarkController
-                                                        .bookmarkstore
-                                                        .removeAt(index);
-                                                  }
-                                                },
-                                                icon: bookmarkController
+                                                          .author!
+                                                      : "",
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              IconButton(
+                                                  splashColor:
+                                                      Colors.transparent,
+                                                  highlightColor:
+                                                      Colors.transparent,
+                                                  onPressed: () {
+                                                    if (bookmarkController
                                                             .bookmarkstore[
                                                                 index]
                                                             .like ==
-                                                        true
-                                                    ? Icon(
-                                                        CupertinoIcons
-                                                            .bookmark_fill,
-                                                        size: 20,
-                                                        color:
-                                                            Color(0xFFC74B16),
-                                                      )
-                                                    : Icon(
-                                                        CupertinoIcons.bookmark,
-                                                        size: 20,
-                                                      )),
-                                            IconButton(
-                                                onPressed: () {
-                                                  Get.bottomSheet(
-                                                      BottomSheet());
-                                                },
-                                                splashColor: Colors.transparent,
-                                                highlightColor:
-                                                    Colors.transparent,
-                                                icon: Icon(
-                                                  CupertinoIcons.ellipsis,
-                                                  size: 20,
-                                                ))
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          )),
-                    
+                                                        true) {
+                                                      changeboolognews(index);
+
+                                                      bookmarkController
+                                                          .bookmarkstore
+                                                          .removeAt(index);
+                                                    }
+                                                  },
+                                                  icon: bookmarkController
+                                                              .bookmarkstore[
+                                                                  index]
+                                                              .like ==
+                                                          true
+                                                      ? Icon(
+                                                          CupertinoIcons
+                                                              .bookmark_fill,
+                                                          size: 20,
+                                                          color:
+                                                              Color(0xFFC74B16),
+                                                        )
+                                                      : Icon(
+                                                          CupertinoIcons
+                                                              .bookmark,
+                                                          size: 20,
+                                                        )),
+                                              IconButton(
+                                                  onPressed: () {
+                                                    Get.bottomSheet(
+                                                        BottomSheet());
+                                                  },
+                                                  splashColor:
+                                                      Colors.transparent,
+                                                  highlightColor:
+                                                      Colors.transparent,
+                                                  icon: Icon(
+                                                    CupertinoIcons.ellipsis,
+                                                    size: 20,
+                                                  ))
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )),
+                      ),
                     ],
                   ),
                 );

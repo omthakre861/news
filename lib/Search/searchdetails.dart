@@ -2,25 +2,24 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:news/controllers/categorycontroller.dart';
 import 'package:news/Webview/webview.dart';
+import 'package:news/controllers/searchcontroller.dart';
+
 import 'package:timeago/timeago.dart' as timeago;
 
-class Categorydetails extends StatelessWidget {
-  Categorydetails({Key? key}) : super(key: key);
-
-  final categoryController = Get.put(CategoryController());
-  final categoryindex = Get.arguments;
-
+class SearchDetails extends StatelessWidget {
+  final searchController = Get.put(SearchController());
+  final query = Get.arguments;
+  String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
   @override
   Widget build(BuildContext context) {
-    categoryController.updateCategory(categoryindex);
+    searchController.fetchSearchList(query);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Get.isDarkMode ? Colors.black : null,
         automaticallyImplyLeading: false,
         elevation: 0,
-        title: Text(categoryindex,
+        title: Text(capitalize(query),
             style: TextStyle(
                 // color: Colors.black,
                 fontFamily: "Merriweather",
@@ -36,20 +35,10 @@ class Categorydetails extends StatelessWidget {
               CupertinoIcons.back,
               // color: Colors.black,
             )),
-        actions: [
-          IconButton(
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              onPressed: () {},
-              icon: Icon(
-                CupertinoIcons.search,
-                // color: Colors.black,
-              ))
-        ],
       ),
       // backgroundColor: Colors.white,
       body: Obx(() {
-        if (categoryController.isLoading.value) {
+        if (searchController.isLoading.value) {
           return Center(
               child: CupertinoActivityIndicator(
             radius: 25,
@@ -58,7 +47,7 @@ class Categorydetails extends StatelessWidget {
         } else {
           return ListView.separated(
             physics: BouncingScrollPhysics(),
-            itemCount: categoryController.categoryList().articles!.length,
+            itemCount: searchController.searchnewslist().articles!.length,
             separatorBuilder: (context, index) => Container(
                 margin: EdgeInsets.symmetric(horizontal: 10),
                 child: Divider(
@@ -72,15 +61,15 @@ class Categorydetails extends StatelessWidget {
                   children: [
                     InkWell(
                       onTap: () {
-                        String newsurl = categoryController
-                            .categoryList()
+                        String newsurl = searchController
+                            .searchnewslist()
                             .articles![index]
                             .url!;
                         Get.to(() => WebviewPage(),
                             arguments: newsurl, fullscreenDialog: true);
                       },
                       child: CategoryNewsCard(
-                        categoryController: categoryController,
+                        searchController: searchController,
                         index: index,
                       ),
                     ),
@@ -102,11 +91,11 @@ class Categorydetails extends StatelessWidget {
 class CategoryNewsCard extends StatelessWidget {
   const CategoryNewsCard({
     Key? key,
-    required this.categoryController,
+    required this.searchController,
     required this.index,
   }) : super(key: key);
 
-  final CategoryController categoryController;
+  final SearchController searchController;
   final int index;
 
   @override
@@ -116,8 +105,8 @@ class CategoryNewsCard extends StatelessWidget {
           elevation: 0,
           child: Container(
               padding: EdgeInsets.all(5),
-              height: categoryController
-                          .categoryList()
+              height: searchController
+                          .searchnewslist()
                           .articles![index]
                           .urlToImage !=
                       null
@@ -125,8 +114,8 @@ class CategoryNewsCard extends StatelessWidget {
                   : 105,
               child: Column(
                 children: [
-                  if (categoryController
-                          .categoryList()
+                  if (searchController
+                          .searchnewslist()
                           .articles![index]
                           .urlToImage !=
                       null) ...[
@@ -134,8 +123,8 @@ class CategoryNewsCard extends StatelessWidget {
                       width: 360,
                       height: 200,
                       child: CachedNetworkImage(
-                        imageUrl: categoryController
-                            .categoryList()
+                        imageUrl: searchController
+                            .searchnewslist()
                             .articles![index]
                             .urlToImage!,
                         imageBuilder: (context, imageProvider) => Container(
@@ -167,7 +156,7 @@ class CategoryNewsCard extends StatelessWidget {
                     height: 39,
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      categoryController.categoryList().articles![index].title!,
+                      searchController.searchnewslist().articles![index].title!,
                       style: TextStyle(
                         fontFamily: 'RobotoMono',
                         fontWeight: FontWeight.bold,
@@ -186,7 +175,7 @@ class CategoryNewsCard extends StatelessWidget {
                           child: Row(
                             children: [
                               Timeago(
-                                  categoryController: categoryController,
+                                  searchController: searchController,
                                   index: index),
                               SizedBox(
                                 width: 5,
@@ -197,13 +186,13 @@ class CategoryNewsCard extends StatelessWidget {
                               ),
                               Expanded(
                                 child: Text(
-                                  categoryController
-                                              .categoryList()
+                                  searchController
+                                              .searchnewslist()
                                               .articles![index]
                                               .author !=
                                           null
-                                      ? categoryController
-                                          .categoryList()
+                                      ? searchController
+                                          .searchnewslist()
                                           .articles![index]
                                           .author!
                                       : "",
@@ -295,17 +284,17 @@ class CategoryNewsCard extends StatelessWidget {
 
 class Timeago extends StatelessWidget {
   const Timeago({
-    required this.categoryController,
+    required this.searchController,
     required this.index,
   });
 
-  final CategoryController categoryController;
+  final SearchController searchController;
   final int index;
 
   @override
   Widget build(BuildContext context) {
-    var date = categoryController
-        .categoryList()
+    var date = searchController
+        .searchnewslist()
         .articles![index]
         .publishedAt!
         .toLocal();

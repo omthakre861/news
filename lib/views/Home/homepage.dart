@@ -3,7 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:get/get.dart';
+import 'package:news/Search/searchdeglate.dart';
+import 'package:news/Search/searchdetails.dart';
 import 'package:news/Theme/theme.dart';
+import 'package:news/Webview/webview.dart';
 import 'package:news/controllers/bookmarkcontroller.dart';
 import 'package:news/controllers/categorycontroller.dart';
 import 'package:news/controllers/newscontroller.dart';
@@ -33,7 +36,14 @@ class HomePage extends StatelessWidget {
                   fontSize: 25)),
           actions: [
             IconButton(
-              onPressed: () {},
+              onPressed: () async {
+                var search =
+                    await showSearch(context: context, delegate: Searchpage());
+                if (search != null && search != "") {
+                  print(search);
+                  Get.to(() => SearchDetails(), arguments: search);
+                }
+              },
               icon: Icon(CupertinoIcons.search),
               iconSize: 25,
               // color: Colors.black87,
@@ -95,141 +105,151 @@ class CardTile extends StatelessWidget {
           child: Column(
             // mainAxisSize: MainAxisSize.min,
             children: [
-              Card(
-                // margin: EdgeInsets.all(0),
-                elevation: 0,
-                child: Container(
-                  padding: EdgeInsets.all(5),
-                  // alignment: Alignment.topCenter,
-                  height: index == 0 ? 310 : 160,
-                  child: Column(
-                    children: [
-                      if (index == 0) ...[
-                        HeadNews(
-                          newsController: newsController,
-                          index: index,
-                        )
-                      ] else ...[
-                        ListNews(newsController: newsController, index: index),
-                      ],
-                      Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: 250,
-                              child: Row(
-                                children: [
-                                  Timeago(
-                                      newsController: newsController,
-                                      index: index),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text('·'),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      newsController
-                                                  .newsList()
-                                                  .articles![index]
-                                                  .author !=
-                                              null
-                                          ? newsController
-                                              .newsList()
-                                              .articles![index]
-                                              .author!
-                                          : "",
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
+              InkWell(
+                onTap: (){
+                String newsurl = newsController
+                            .newsList()
+                            .articles![index]
+                            .url!;
+                        Get.to(() => WebviewPage(),
+                            arguments: newsurl, fullscreenDialog: true);
+                       },
+                child: Card(
+                  // margin: EdgeInsets.all(0),
+                  elevation: 0,
+                  child: Container(
+                    padding: EdgeInsets.all(5),
+                    // alignment: Alignment.topCenter,
+                    height: index == 0 ? 320 : 160,
+                    child: Column(
+                      children: [
+                        if (index == 0) ...[
+                          HeadNews(
+                            newsController: newsController,
+                            index: index,
+                          )
+                        ] else ...[
+                          ListNews(newsController: newsController, index: index),
+                        ],
+                        Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                width: 250,
+                                child: Row(
+                                  children: [
+                                    Timeago(
+                                        newsController: newsController,
+                                        index: index),
+                                    SizedBox(
+                                      width: 5,
                                     ),
-                                  ),
-                                ],
+                                    Text('·'),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        newsController
+                                                    .newsList()
+                                                    .articles![index]
+                                                    .author !=
+                                                null
+                                            ? newsController
+                                                .newsList()
+                                                .articles![index]
+                                                .author!
+                                            : "",
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            Container(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  IconButton(
-                                      splashColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onPressed: () {
-                                        newsController.bookmarkbtn(index);
+                              Container(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    IconButton(
+                                        splashColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                        onPressed: () {
+                                          newsController.bookmarkbtn(index);
 
-                                        // print(index);
-                                        print(bookmarkvalue());
-                                        if (newsController
-                                            .bookmarkismarked[index]) {
-                                          bookmarkController.bookmarkstore
-                                              .add(bookmarkvalue());
-                                          print(bookmarkController
-                                              .bookmarkstore[0]);
-                                          Get.snackbar("Saved",
-                                              "You can find this story in Bookmarks.",
-                                              titleText: Text("Saved",
-                                                  style: TextStyle(
-                                                    fontFamily: "RobotoMono",
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 20,
-                                                  )),
-                                              messageText: Text(
-                                                  "You can find this story in Bookmarks."),
-                                              snackPosition:
-                                                  SnackPosition.BOTTOM,
-                                              barBlur: 8,
-                                              icon: Container(
-                                                margin: EdgeInsets.all(10),
-                                                child: Icon(
-                                                  CupertinoIcons.bookmark_fill,
-                                                  size: 40,
-                                                  color: Color(0xFFC74B16),
+                                          // print(index);
+                                          print(bookmarkvalue());
+                                          if (newsController
+                                              .bookmarkismarked[index]) {
+                                            bookmarkController.bookmarkstore
+                                                .add(bookmarkvalue());
+                                            print(bookmarkController
+                                                .bookmarkstore[0]);
+                                            Get.snackbar("Saved",
+                                                "You can find this story in Bookmarks.",
+                                                titleText: Text("Saved",
+                                                    style: TextStyle(
+                                                      fontFamily: "RobotoMono",
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 20,
+                                                    )),
+                                                messageText: Text(
+                                                    "You can find this story in Bookmarks."),
+                                                snackPosition:
+                                                    SnackPosition.BOTTOM,
+                                                barBlur: 8,
+                                                icon: Container(
+                                                  margin: EdgeInsets.all(10),
+                                                  child: Icon(
+                                                    CupertinoIcons.bookmark_fill,
+                                                    size: 40,
+                                                    color: Color(0xFFC74B16),
+                                                  ),
                                                 ),
-                                              ),
-                                              shouldIconPulse: false);
-                                        } else {
-                                          bookmarkController.bookmarkstore
-                                              .removeWhere((element) =>
-                                                  element.title ==
-                                                  newsController
-                                                      .newsList()
-                                                      .articles![index]
-                                                      .title);
-                                          print(
-                                              bookmarkController.bookmarkstore);
-                                        }
-                                      },
-                                      icon: !newsController
-                                              .bookmarkismarked[index]
-                                          ? Icon(
-                                              CupertinoIcons.bookmark,
-                                              size: 20,
-                                            )
-                                          : Icon(
-                                              CupertinoIcons.bookmark_fill,
-                                              size: 20,
-                                              color: Color(0xFFC74B16),
-                                            )),
-                                  IconButton(
-                                      onPressed: () {
-                                        Get.bottomSheet(BottomSheet());
-                                      },
-                                      splashColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      icon: Icon(
-                                        CupertinoIcons.ellipsis,
-                                        size: 20,
-                                      ))
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      )
-                    ],
+                                                shouldIconPulse: false);
+                                          } else {
+                                            bookmarkController.bookmarkstore
+                                                .removeWhere((element) =>
+                                                    element.title ==
+                                                    newsController
+                                                        .newsList()
+                                                        .articles![index]
+                                                        .title);
+                                            print(
+                                                bookmarkController.bookmarkstore);
+                                          }
+                                        },
+                                        icon: !newsController
+                                                .bookmarkismarked[index]
+                                            ? Icon(
+                                                CupertinoIcons.bookmark,
+                                                size: 20,
+                                              )
+                                            : Icon(
+                                                CupertinoIcons.bookmark_fill,
+                                                size: 20,
+                                                color: Color(0xFFC74B16),
+                                              )),
+                                    IconButton(
+                                        onPressed: () {
+                                          Get.bottomSheet(BottomSheet());
+                                        },
+                                        splashColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                        icon: Icon(
+                                          CupertinoIcons.ellipsis,
+                                          size: 20,
+                                        ))
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
