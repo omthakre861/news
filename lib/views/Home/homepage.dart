@@ -5,9 +5,11 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:news/Bottomsheet/bottomsheet.dart';
 import 'package:news/Search/searchdeglate.dart';
 import 'package:news/Search/searchdetails.dart';
 import 'package:news/Theme/theme.dart';
+import 'package:news/Utils/widgetsizecontrol.dart';
 import 'package:news/Webview/webview.dart';
 import 'package:news/controllers/bookmarkcontroller.dart';
 import 'package:news/controllers/categorycontroller.dart';
@@ -20,9 +22,12 @@ import 'package:timeago/timeago.dart' as timeago;
 class HomePage extends StatelessWidget {
   final newsController = Get.put(NewsController());
   final bookmarkController = Get.put(BookmarkController());
-
+  static late double homepagewidth;
+  static late double homepageheight;
   @override
   Widget build(BuildContext context) {
+    homepagewidth = Widgetratio(context).width;
+    homepageheight = Widgetratio(context).height;
     Future<void> update() async {
       newsController.refresh();
     }
@@ -121,7 +126,10 @@ class CardTile extends StatelessWidget {
                   child: Container(
                     padding: EdgeInsets.all(5),
                     // alignment: Alignment.topCenter,
-                    height: index == 0 ? 320 : 160,
+                    // height: index == 0 ? 320 : 160,
+                    height: index == 0
+                        ? HomePage.homepageheight / 2.68
+                        : HomePage.homepageheight / 5.27,
                     child: Column(
                       children: [
                         if (index == 0) ...[
@@ -138,7 +146,7 @@ class CardTile extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                width: 250,
+                                width: HomePage.homepagewidth / 1.55,
                                 child: Row(
                                   children: [
                                     Timeago(
@@ -242,7 +250,7 @@ class CardTile extends StatelessWidget {
                                               )),
                                     IconButton(
                                         onPressed: () {
-                                          Get.bottomSheet(BottomSheet(
+                                          Get.bottomSheet(BottomShit(
                                             url: newsController
                                                 .newsList()
                                                 .articles![index]
@@ -251,6 +259,7 @@ class CardTile extends StatelessWidget {
                                                 .newsList()
                                                 .articles![index]
                                                 .title!,
+                                            height: HomePage.homepageheight,
                                           ));
                                         },
                                         splashColor: Colors.transparent,
@@ -293,93 +302,6 @@ class CardTile extends StatelessWidget {
   }
 }
 
-class BottomSheet extends StatelessWidget {
-  const BottomSheet({
-    required this.url,
-    required this.subject,
-    Key? key,
-  }) : super(key: key);
-
-  final String url;
-  final String subject;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        height: 250,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-              topLeft: (Radius.circular(15.0)),
-              topRight: (Radius.circular(15.0))),
-        ),
-        child: Column(
-          children: [
-            ListTile(
-              leading: Icon(
-                CupertinoIcons.share,
-                size: 25,
-                color: Colors.black,
-              ),
-              title: Text(
-                'Share too ...',
-                style: TextStyle(color: Colors.black),
-              ),
-              onTap: () {
-                Share.share(
-                  url,
-                  subject: subject,
-                );
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                CupertinoIcons.link,
-                size: 25,
-                color: Colors.black,
-              ),
-              title: Text(
-                'Copy link',
-                style: TextStyle(color: Colors.black),
-              ),
-              onTap: () async {
-                await Clipboard.setData(ClipboardData(text: url));
-                Get.back();
-                Fluttertoast.showToast(
-                    msg: "Link is Copied !!!",
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    timeInSecForIosWeb: 1,
-                    textColor: Colors.white,
-                    fontSize: 16.0);
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                CupertinoIcons.eye_slash_fill,
-                size: 25,
-                color: Colors.black,
-              ),
-              title: Text(
-                'Not interesting',
-                style: TextStyle(color: Colors.black),
-              ),
-            ),
-            ListTile(
-              leading: Icon(
-                CupertinoIcons.exclamationmark_circle,
-                size: 25,
-                color: Colors.black,
-              ),
-              title: Text(
-                'Report',
-                style: TextStyle(color: Colors.black),
-              ),
-            ),
-          ],
-        ));
-  }
-}
 
 class HeadNews extends StatelessWidget {
   const HeadNews({
@@ -398,8 +320,8 @@ class HeadNews extends StatelessWidget {
           if (newsController.newsList().articles![index].urlToImage !=
               null) ...[
             Container(
-              width: 360,
-              height: 200,
+              width: HomePage.homepagewidth,
+              height: HomePage.homepageheight / 4,
               child: CachedNetworkImage(
                 imageUrl:
                     newsController.newsList().articles![index].urlToImage!,
@@ -459,10 +381,12 @@ class ListNews extends StatelessWidget {
       children: [
         if (newsController.newsList().articles![index].urlToImage != null) ...[
           Container(
-            alignment: Alignment.topCenter,
+            alignment: Alignment.center,
             // color: Colors.red,
-            width: 256,
-            height: 90,
+            // width: 256,
+            // height: 90,
+            width: HomePage.homepagewidth / 1.50,
+            height: HomePage.homepageheight / 8.3,
             padding: EdgeInsets.only(right: 20),
             child: Text(newsController.newsList().articles![index].title!,
                 style: TextStyle(
@@ -499,7 +423,7 @@ class ListNews extends StatelessWidget {
           Expanded(
             child: Container(
               alignment: Alignment.center,
-              height: 95,
+              height: HomePage.homepageheight / 8.3,
               padding: EdgeInsets.only(right: 20),
               child: Text(newsController.newsList().articles![index].title!,
                   style: TextStyle(

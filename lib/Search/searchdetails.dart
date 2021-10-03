@@ -2,33 +2,43 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:news/Utils/widgetsizecontrol.dart';
 import 'package:news/Webview/webview.dart';
 import 'package:news/controllers/searchcontroller.dart';
-
+import 'package:news/Bottomsheet/bottomsheet.dart';
+import 'package:news/views/Bookmark/Tabbars/savedtabbar.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class SearchDetails extends StatelessWidget {
   final searchController = Get.put(SearchController());
   final query = Get.arguments;
+  static late double searchpageWidth;
+  static late double searchpageHeight;
   final List<String> sortmenu = <String>["Popular", "Relevance", "Date"];
   final List<bool> isSelected = <bool>[true, false, false, false];
 
   String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
   @override
   Widget build(BuildContext context) {
+    searchpageWidth = Widgetratio(context).width;
+    searchpageHeight = Widgetratio(context).height;
+
     searchController.fetchSearchList(query);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Get.isDarkMode ? Colors.black : null,
         automaticallyImplyLeading: false,
         elevation: 0,
-        title: Text(
-          capitalize(query),
-          style: TextStyle(
-              // color: Colors.black,
-              fontFamily: "Merriweather",
-              fontWeight: FontWeight.bold),
-          overflow: TextOverflow.ellipsis,
+        title: FittedBox(
+          fit: BoxFit.fitWidth,
+          child: Text(
+            capitalize(query),
+            style: TextStyle(
+                // color: Colors.black,
+                fontFamily: "Merriweather",
+                fontWeight: FontWeight.bold),
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
         centerTitle: true,
         leading: IconButton(
@@ -213,8 +223,8 @@ class CategoryNewsCard extends StatelessWidget {
                               .articles![index]
                               .urlToImage !=
                           null
-                      ? 305
-                      : 105,
+                      ? SearchDetails.searchpageHeight / 2.7
+                      : SearchDetails.searchpageHeight / 7.5,
                   child: Column(
                     children: [
                       if (searchController
@@ -223,8 +233,10 @@ class CategoryNewsCard extends StatelessWidget {
                               .urlToImage !=
                           null) ...[
                         Container(
-                          width: 360,
-                          height: 200,
+                          width: SearchDetails.searchpageWidth,
+                          height: SearchDetails.searchpageHeight / 4.2,
+                          // width: 360,
+                          // height: 200,
                           child: CachedNetworkImage(
                             imageUrl: searchController
                                 .searchnewslist()
@@ -257,7 +269,9 @@ class CategoryNewsCard extends StatelessWidget {
                         height: 8,
                       ),
                       Container(
-                        height: 39,
+                        // color: Colors.red,
+                        // height: 39,
+                        height: SearchDetails.searchpageHeight / 19,
                         alignment: Alignment.centerLeft,
                         child: Text(
                           searchController
@@ -278,7 +292,9 @@ class CategoryNewsCard extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: 250,
+                              width: SearchDetails.searchpageWidth / 1.53,
+
+                              // width: 250,
                               child: Row(
                                 children: [
                                   Timeago(
@@ -325,55 +341,17 @@ class CategoryNewsCard extends StatelessWidget {
                                       )),
                                   IconButton(
                                       onPressed: () {
-                                        Get.bottomSheet(Container(
-                                            height: 250,
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.only(
-                                                  topLeft:
-                                                      (Radius.circular(15.0)),
-                                                  topRight:
-                                                      (Radius.circular(15.0))),
-                                            ),
-                                            child: Column(
-                                              children: [
-                                                ListTile(
-                                                  leading: Icon(
-                                                    CupertinoIcons.share,
-                                                    size: 25,
-                                                    color: Colors.black,
-                                                  ),
-                                                  title: Text('Share too ...'),
-                                                ),
-                                                ListTile(
-                                                  leading: Icon(
-                                                    CupertinoIcons.link,
-                                                    size: 25,
-                                                    color: Colors.black,
-                                                  ),
-                                                  title: Text('Copy link'),
-                                                ),
-                                                ListTile(
-                                                  leading: Icon(
-                                                    CupertinoIcons
-                                                        .eye_slash_fill,
-                                                    size: 25,
-                                                    color: Colors.black,
-                                                  ),
-                                                  title:
-                                                      Text('Not interesting'),
-                                                ),
-                                                ListTile(
-                                                  leading: Icon(
-                                                    CupertinoIcons
-                                                        .exclamationmark_circle,
-                                                    size: 25,
-                                                    color: Colors.black,
-                                                  ),
-                                                  title: Text('Report'),
-                                                ),
-                                              ],
-                                            )));
+                                        Get.bottomSheet(BottomShit(
+                                            url: searchController
+                                                .searchnewslist()
+                                                .articles![index]
+                                                .url!,
+                                            subject: searchController
+                                                .searchnewslist()
+                                                .articles![index]
+                                                .title!,
+                                            height: SearchDetails
+                                                .searchpageHeight));
                                       },
                                       splashColor: Colors.transparent,
                                       highlightColor: Colors.transparent,

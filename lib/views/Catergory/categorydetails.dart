@@ -1,11 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:news/Bottomsheet/bottomsheet.dart';
 import 'package:news/Search/searchdeglate.dart';
 import 'package:news/Search/searchdetails.dart';
+import 'package:news/Utils/widgetsizecontrol.dart';
 import 'package:news/controllers/categorycontroller.dart';
 import 'package:news/Webview/webview.dart';
+import 'package:share/share.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class Categorydetails extends StatelessWidget {
@@ -13,9 +18,13 @@ class Categorydetails extends StatelessWidget {
 
   final categoryController = Get.put(CategoryController());
   final categoryindex = Get.arguments;
+  static late double categorydetailsWidth;
+  static late double categorydetailsHeight;
 
   @override
   Widget build(BuildContext context) {
+    categorydetailsWidth = Widgetratio(context).width;
+    categorydetailsHeight = Widgetratio(context).height;
     categoryController.updateCategory(categoryindex);
     return Scaffold(
       appBar: AppBar(
@@ -130,8 +139,8 @@ class CategoryNewsCard extends StatelessWidget {
                           .articles![index]
                           .urlToImage !=
                       null
-                  ? 305
-                  : 105,
+                  ? Categorydetails.categorydetailsHeight / 2.7
+                  : Categorydetails.categorydetailsHeight / 7.5,
               child: Column(
                 children: [
                   if (categoryController
@@ -140,8 +149,10 @@ class CategoryNewsCard extends StatelessWidget {
                           .urlToImage !=
                       null) ...[
                     Container(
-                      width: 360,
-                      height: 200,
+                      // width: 360,
+                      // height: 200,
+                      width: Categorydetails.categorydetailsWidth,
+                      height: Categorydetails.categorydetailsHeight / 4.2,
                       child: CachedNetworkImage(
                         imageUrl: categoryController
                             .categoryList()
@@ -173,7 +184,8 @@ class CategoryNewsCard extends StatelessWidget {
                     height: 8,
                   ),
                   Container(
-                    height: 39,
+                    // height: 39,
+                    height: Categorydetails.categorydetailsHeight / 19,
                     alignment: Alignment.centerLeft,
                     child: Text(
                       categoryController.categoryList().articles![index].title!,
@@ -191,7 +203,8 @@ class CategoryNewsCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          width: 250,
+                          // width: 250,
+                          width: Categorydetails.categorydetailsWidth / 1.53,
                           child: Row(
                             children: [
                               Timeago(
@@ -237,52 +250,18 @@ class CategoryNewsCard extends StatelessWidget {
                                   )),
                               IconButton(
                                   onPressed: () {
-                                    Get.bottomSheet(Container(
-                                        height: 250,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: (Radius.circular(15.0)),
-                                              topRight:
-                                                  (Radius.circular(15.0))),
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            ListTile(
-                                              leading: Icon(
-                                                CupertinoIcons.share,
-                                                size: 25,
-                                                color: Colors.black,
-                                              ),
-                                              title: Text('Share too ...'),
-                                            ),
-                                            ListTile(
-                                              leading: Icon(
-                                                CupertinoIcons.link,
-                                                size: 25,
-                                                color: Colors.black,
-                                              ),
-                                              title: Text('Copy link'),
-                                            ),
-                                            ListTile(
-                                              leading: Icon(
-                                                CupertinoIcons.eye_slash_fill,
-                                                size: 25,
-                                                color: Colors.black,
-                                              ),
-                                              title: Text('Not interesting'),
-                                            ),
-                                            ListTile(
-                                              leading: Icon(
-                                                CupertinoIcons
-                                                    .exclamationmark_circle,
-                                                size: 25,
-                                                color: Colors.black,
-                                              ),
-                                              title: Text('Report'),
-                                            ),
-                                          ],
-                                        )));
+                                    Get.bottomSheet(BottomShit(
+                                      url: categoryController
+                                          .categoryList()
+                                          .articles![index]
+                                          .url!,
+                                      subject: categoryController
+                                          .categoryList()
+                                          .articles![index]
+                                          .title!,
+                                      height:
+                                          Categorydetails.categorydetailsHeight,
+                                    ));
                                   },
                                   splashColor: Colors.transparent,
                                   highlightColor: Colors.transparent,

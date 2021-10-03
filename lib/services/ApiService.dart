@@ -2,13 +2,16 @@ import 'package:http/http.dart' as http;
 import 'package:news/models/categornews.dart';
 import 'package:news/models/newsheadline.dart';
 import 'package:news/models/search.dart';
-
+import 'package:news/services/Apiconfig.dart';
+ 
+  late String apikey = ApiConfig.API_KEY;
 class ApiService {
+  
+ 
   static var client = http.Client();
 
   static Future<NewsHeadline?> fetchNewsHeadline() async {
-    var url =
-        "https://newsapi.org/v2/top-headlines?country=us&apiKey=1bbfd081107743c484a41019171fcf21";
+    var url = "https://newsapi.org/v2/top-headlines?country=us&apiKey=$apikey";
     var response = await client.get(Uri.parse(url));
 
     try {
@@ -21,16 +24,16 @@ class ApiService {
       print(e);
       // TODO
     }
-  return null;
+    return null;
   }
 }
 
-class CategoryService{
+class CategoryService {
   static var client = http.Client();
 
   static Future<CategoryNews?> fetchCategory(String catergoryname) async {
     var url =
-        "https://newsapi.org/v2/top-headlines?country=us&category=$catergoryname&apiKey=1bbfd081107743c484a41019171fcf21";
+        "https://newsapi.org/v2/top-headlines?country=us&category=$catergoryname&apiKey=$apikey";
     var response = await client.get(Uri.parse(url));
 
     try {
@@ -43,16 +46,16 @@ class CategoryService{
       print(e);
       // TODO
     }
-  return null;
+    return null;
   }
 }
 
-class SearchService{
+class SearchService {
   static var client = http.Client();
 
-  static Future<SearchNews?> fetchSearch(String query,String sortby) async {
+  static Future<SearchNews?> fetchSearch(String query, String sortby) async {
     var url =
-        "https://newsapi.org/v2/everything?q=$query&sortBy=$sortby&apiKey=1bbfd081107743c484a41019171fcf21";
+        "https://newsapi.org/v2/everything?q=$query&sortBy=$sortby&apiKey=$apikey";
     var response = await client.get(Uri.parse(url));
 
     try {
@@ -65,6 +68,6 @@ class SearchService{
       print(e);
       // TODO
     }
-  return null;
+    return null;
   }
 }

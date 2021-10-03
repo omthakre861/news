@@ -2,19 +2,27 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:news/Bottomsheet/bottomsheet.dart';
+import 'package:news/Utils/widgetsizecontrol.dart';
 import 'package:news/Webview/webview.dart';
 import 'package:news/controllers/bookmarkcontroller.dart';
 import 'package:news/controllers/newscontroller.dart';
+import 'package:share/share.dart';
 
 import 'package:timeago/timeago.dart' as timeago;
 
 class Savedbookmark extends StatelessWidget {
   final bookmarkController = Get.put(BookmarkController());
   final newsController = Get.put(NewsController());
-
+  static late double savedtabWidth;
+  static late double savedtabHeight;
   @override
   Widget build(BuildContext context) {
+    savedtabWidth = Widgetratio(context).width;
+    savedtabHeight = Widgetratio(context).height;
     return Scaffold(
       // backgroundColor: Colors.white,
       body: Obx(() {
@@ -133,8 +141,17 @@ class Savedbookmark extends StatelessWidget {
                                                         )),
                                               IconButton(
                                                   onPressed: () {
-                                                    Get.bottomSheet(
-                                                        BottomSheet());
+                                                    Get.bottomSheet(BottomShit(
+                                                      url: bookmarkController
+                                                          .bookmarkstore[index]
+                                                          .url!,
+                                                      subject:
+                                                          bookmarkController
+                                                              .bookmarkstore[
+                                                                  index]
+                                                              .title!,
+                                                              height:Savedbookmark.savedtabHeight
+                                                    ));
                                                   },
                                                   splashColor:
                                                       Colors.transparent,
@@ -232,7 +249,10 @@ class ListNews extends StatelessWidget {
       children: [
         if (bookmarkController.bookmarkstore[index].urlToImage != null) ...[
           Container(
-            width: 256,
+            // width: 256,
+            width: Savedbookmark.savedtabWidth / 1.50,
+            height: Savedbookmark.savedtabHeight / 8.3,
+            alignment: Alignment.center,
             padding: EdgeInsets.only(right: 20),
             child: Text(bookmarkController.bookmarkstore[index].title!,
                 style: TextStyle(
@@ -269,7 +289,7 @@ class ListNews extends StatelessWidget {
           Expanded(
             child: Container(
               alignment: Alignment.center,
-              height: 95,
+              height: Savedbookmark.savedtabHeight / 8.3,
               padding: EdgeInsets.only(right: 20),
               child: Text(bookmarkController.bookmarkstore[index].title!,
                   style: TextStyle(
@@ -285,59 +305,6 @@ class ListNews extends StatelessWidget {
   }
 }
 
-class BottomSheet extends StatelessWidget {
-  const BottomSheet({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        height: 250,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-              topLeft: (Radius.circular(15.0)),
-              topRight: (Radius.circular(15.0))),
-        ),
-        child: Column(
-          children: [
-            ListTile(
-              leading: Icon(
-                CupertinoIcons.share,
-                size: 25,
-                color: Colors.black,
-              ),
-              title: Text('Share too ...'),
-            ),
-            ListTile(
-              leading: Icon(
-                CupertinoIcons.link,
-                size: 25,
-                color: Colors.black,
-              ),
-              title: Text('Copy link'),
-            ),
-            ListTile(
-              leading: Icon(
-                CupertinoIcons.eye_slash_fill,
-                size: 25,
-                color: Colors.black,
-              ),
-              title: Text('Not interesting'),
-            ),
-            ListTile(
-              leading: Icon(
-                CupertinoIcons.exclamationmark_circle,
-                size: 25,
-                color: Colors.black,
-              ),
-              title: Text('Report'),
-            ),
-          ],
-        ));
-  }
-}
 
 class Timeago extends StatelessWidget {
   const Timeago({
